@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간식쏘기</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card main-card">
+            <h1>🎁 간식쏘기</h1>
+            <div class="setup-form">
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="totalAmount">총 금액</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="totalAmount" min="1000" step="1000" placeholder="총 금액">
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="memberInput">참여자 명단</label>
+                        <div class="input-with-button">
+                            <textarea id="memberInput" placeholder="카톡방 멤버 이름을 붙여넣으세요&#10;(한 줄에 한 명씩)"></textarea>
+                            <button id="parseMembers" class="secondary-button">
+                                <span class="button-text">멤버 가져오기</span>
+                                <span class="button-icon">📋</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="input-group">
+                        <label for="minAmount">최소 금액</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="minAmount" min="1000" step="1000" placeholder="최소 금액">
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="maxAmount">최대 금액</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="maxAmount" min="1000" step="1000" placeholder="최대 금액">
+                            <span class="unit">원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="memberList" class="card member-list">
+            <h2>참여자 목록</h2>
+            <div id="memberChips" class="member-chips">
+                <!-- 멤버 칩은 JavaScript로 동적 생성됩니다 -->
+            </div>
+        </div>
+
+        <button id="generateBtn" disabled>
+            <span class="button-text">결과 생성하기</span>
+            <span class="button-icon">🎲</span>
+        </button>
+
+        <div id="results" class="results">
+            <!-- 결과는 JavaScript로 동적 생성됩니다 -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
