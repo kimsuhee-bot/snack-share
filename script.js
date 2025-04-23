@@ -40,10 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 줄바꿈으로 구분된 이름을 배열로 변환
-        members = text.split('\n')
-            .map(name => name.trim())
-            .filter(name => name.length > 0);
+        // 카카오톡 멤버 목록 파싱 개선
+        // 1. 줄바꿈으로 분리
+        // 2. 각 줄에서 이름만 추출 (콜론이나 기타 구분자 제거)
+        // 3. 중복 제거 및 빈 값 제거
+        const rawMembers = text.split('\n')
+            .map(line => {
+                // "홍길동 : " 또는 "홍길동:" 형식에서 이름만 추출
+                const match = line.match(/^([^:]+?)(?:\s*:|\s*$)/);
+                return match ? match[1].trim() : null;
+            })
+            .filter(name => name && name.length > 0);
+
+        // 중복 제거
+        members = [...new Set(rawMembers)];
 
         if (members.length === 0) {
             alert('유효한 멤버 이름을 찾을 수 없습니다.');
@@ -53,6 +63,28 @@ document.addEventListener('DOMContentLoaded', () => {
         updateMemberChips();
         validateInputs();
     });
+
+    // 최소/최대 금액 입력 필드의 keyup 이벤트 리스너
+    [minAmountInput, maxAmountInput].forEach(input => {
+        input.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                validateAmounts();
+            }
+        });
+    });
+
+    function validateAmounts() {
+        const minAmount = parseInt(minAmountInput.value);
+        const maxAmount = parseInt(maxAmountInput.value);
+
+        if (minAmount && maxAmount && minAmount > maxAmount) {
+            alert('최소 금액이 최대 금액보다 클 수 없습니다.');
+            maxAmountInput.value = '';
+            maxAmountInput.focus();
+            return false;
+        }
+        return true;
+    }
 
     function validateInputs() {
         const totalAmount = parseInt(totalAmountInput.value);
@@ -66,13 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        // 최소값이 최대값보다 큰 경우
-        if (minAmount > maxAmount) {
-            alert('최소 금액이 최대 금액보다 클 수 없습니다.');
-            generateBtn.disabled = true;
-            return false;
-        }
-
         // 참가자가 2명 이상인지 확인
         if (peopleCount < 2) {
             generateBtn.disabled = true;
@@ -81,6 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 모든 값이 입력된 경우에만 총액 검사
         if (totalAmount && peopleCount && minAmount && maxAmount) {
+            if (!validateAmounts()) {
+                generateBtn.disabled = true;
+                return false;
+            }
+
             // 최대 금액이 (총액 - (인원수-1)×최소금액)을 초과하는지 검사
             const maxPossibleAmount = totalAmount - (peopleCount - 1) * minAmount;
             if (maxAmount > maxPossibleAmount) {
